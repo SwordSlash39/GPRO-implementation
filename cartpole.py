@@ -132,8 +132,6 @@ for e in range(EPISODES):
     actions_tensor = torch.tensor(actions, dtype=torch.int64).unsqueeze(1).to(device)
     advantages_tensor = torch.tensor(advantages, dtype=torch.float32).unsqueeze(1).to(device)
     
-    # print shapes
-    
     # Calculate policy loss
     r_value = torch.exp(torch.gather(policy(states_tensor), 1, actions_tensor) - torch.gather(old_policy_tensor, 1, actions_tensor).detach())
     clamp_advantages = torch.min(r_value * advantages_tensor, torch.clamp(r_value, 1-EPSILON, 1+EPSILON) * advantages_tensor)
