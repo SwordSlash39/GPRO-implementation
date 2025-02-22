@@ -28,7 +28,7 @@ class Policy(nn.Module):
 
 # Net
 policy = Policy(8, 4)
-policy_optim = torch.optim.Adam(policy.parameters(), lr=1e-4)
+policy_optim = torch.optim.Adam(policy.parameters(), lr=1e-3)
 
 # Initialise the environment
 env = gym.make("LunarLander-v3")
