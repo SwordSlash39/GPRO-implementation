@@ -4,9 +4,6 @@ import torch.nn as nn
 import random
 import numpy as np
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-cpu_device = torch.device("cpu")
-
 # GPRO
 class Policy(nn.Module):
     def __init__(self, input_size, output_size):
@@ -53,9 +50,6 @@ train_rewards = []
 for e in range(EPISODES):
     seed = random.randint(1, 10000)
     rewards = []
-    
-    # CPU is faster for batch 1
-    policy = policy.to(cpu_device)
     
     with torch.no_grad():
         for b in range(BATCH_SIZE): 
@@ -126,13 +120,13 @@ for e in range(EPISODES):
             advantages.append(train_data[i][j][3])
     
     # Shift policy to gpu
-    policy = policy.to(device)
+    policy = policy
     
     # Convert to tensors
-    states_tensor = torch.tensor(np.array(states), dtype=torch.float32).to(device)
-    old_policy_tensor = torch.stack(old_policy, dim=0).to(device)
-    actions_tensor = torch.tensor(actions, dtype=torch.int64).unsqueeze(1).to(device)
-    advantages_tensor = torch.tensor(advantages, dtype=torch.float32).unsqueeze(1).to(device)
+    states_tensor = torch.tensor(np.array(states), dtype=torch.float32)
+    old_policy_tensor = torch.stack(old_policy, dim=0)
+    actions_tensor = torch.tensor(actions, dtype=torch.int64).unsqueeze(1)
+    advantages_tensor = torch.tensor(advantages, dtype=torch.float32).unsqueeze(1)
     
     # Calculate policy loss
     r_value = torch.exp(torch.gather(policy(states_tensor), 1, actions_tensor) - torch.gather(old_policy_tensor, 1, actions_tensor).detach())
