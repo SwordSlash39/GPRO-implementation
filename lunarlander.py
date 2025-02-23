@@ -118,9 +118,7 @@ for e in range(EPISODES):
             old_policy.append(train_data[i][j][1])
             actions.append(train_data[i][j][2])
             advantages.append(train_data[i][j][3])
-    
-    # Shift policy to gpu
-    policy = policy
+
     
     # Convert to tensors
     states_tensor = torch.tensor(np.array(states), dtype=torch.float32)
